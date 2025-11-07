@@ -11,34 +11,35 @@ joueurs = [
 
 st.title("🏉 Composition d'équipe de Rugby")
 
+# --- Styles CSS (sans fond vert) ---
 st.markdown("""
 <style>
     .terrain {
         position: relative;
         width: 100%;
         height: 600px;
-        background: linear-gradient(to right, #4CAF50 20%, #66BB6A 80%);
-        border: 4px solid #388E3C;
-        border-radius: 15px;
+        background: transparent;
         margin-top: 20px;
     }
     .joueur-box {
         position: absolute;
-        width: 8vw;      /* Longueur approximative (fixe) */
-        height: 40px;    /* Hauteur fixe */
+        width: 8vw;       /* largeur fixe */
+        height: 50px;     /* hauteur fixe */
         background-color: white;
-        border-radius: 8px;
-        box-shadow: 0px 3px 6px rgba(0,0,0,0.3);
+        border-radius: 10px;
+        box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
         padding: 4px;
-        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
-    label, .stSelectbox {
-        font-size: 0.9rem !important;
+    .stSelectbox {
+        width: 100% !important;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# --- Coordonnées (x,y) données ---
+# --- Coordonnées (x, y) données ---
 positions = {
     1: (3, 5.5),
     2: (9, 5.5),
@@ -57,25 +58,25 @@ positions = {
     15: (9, 0.5)
 }
 
-# --- Conversion coord -> position CSS ---
-def coord_to_css(x, y, width=4, height=0.5):
-    # Normalisation pour correspondre à la hauteur/largeur du terrain
-    left = f"{x * 4.5}%"   # facteur pour adapter la largeur
-    top = f"{(6.5 - y) * 13}%"  # inverser l’axe Y pour correspondre à ton repère
+# --- Conversion coordonnées → position CSS ---
+def coord_to_css(x, y):
+    left = f"{x * 4.5}%"         # étalement horizontal
+    top = f"{(6.5 - y) * 13}%"   # inversion verticale pour ton repère
     return f"left:{left}; top:{top};"
 
-# --- Affichage du terrain ---
+# --- Conteneur principal ---
 st.markdown("<div class='terrain'>", unsafe_allow_html=True)
 
+# Création des 15 encadrés
 for i in range(1, 16):
     css_pos = coord_to_css(*positions[i])
     st.markdown(f"<div class='joueur-box' style='{css_pos}'>", unsafe_allow_html=True)
-    joueur = st.selectbox(f"Joueur {i}", joueurs, key=f"joueur_{i}")
+    st.selectbox(f"Poste {i}", joueurs, key=f"joueur_{i}", label_visibility="collapsed")
     st.markdown("</div>", unsafe_allow_html=True)
 
 st.markdown("</div>", unsafe_allow_html=True)
 
-# --- Résumé ---
+# --- Résumé final ---
 st.markdown("---")
 st.subheader("📋 Composition finale")
 for i in range(1, 16):
