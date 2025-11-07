@@ -179,6 +179,7 @@ elif st.session_state.page == 2:
         if col.button(f"n°{i} : {st.session_state.composition[i]}{checked}", key=f"btn_{i}"):
             st.session_state.current_joueur = i
             st.session_state.page = 3
+            st.experimental_rerun()
 
     # Bouton pour générer Excel
     if all(st.session_state.joueur_validated[i] for i in range(1, nbr_joueur)):
@@ -224,3 +225,4 @@ elif st.session_state.page == 3:
         st.session_state.joueur_validated[idx] = True
         st.session_state.check_joueur[idx] = True  # ✅ coche le joueur
         st.session_state.page = 2
+        st.experimental_rerun()
