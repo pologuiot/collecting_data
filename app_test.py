@@ -162,7 +162,7 @@ elif st.session_state.page == 2:
         output = BytesIO()
         with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
             df.to_excel(writer, index=False, sheet_name="Composition")
-            writer.save()
+            # writer.save()
         excel_data = output.getvalue()
 
         st.download_button(
