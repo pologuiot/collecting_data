@@ -5,7 +5,7 @@
 # st.set_page_config(page_title="Composition de Rugby", layout="wide")
 
 # # --- Nombre de joueurs ---
-# nbr_joueur = 5
+# nbr_joueur = 4
 
 # # --- Liste des joueurs ---
 # joueurs = [" "] + [
@@ -27,6 +27,8 @@
 #     st.session_state.joueur_phrase = {i: "" for i in range(1, nbr_joueur)}
 # if "current_joueur" not in st.session_state:
 #     st.session_state.current_joueur = None
+# if "check_joueur" not in st.session_state:
+#     st.session_state.check_joueur = {i: False for i in range(1, nbr_joueur)}  # ✅ nouvelle variable
 
 # # --- PAGE 1 : sélection des joueurs ---
 # if st.session_state.page == 1:
@@ -49,19 +51,20 @@
 #     st.title("✅ La compo est finie")
 #     st.subheader("📋 Composition finale")
 
-#     # Affichage composition
-#     for i in range(1, nbr_joueur):
-#         st.write(f"n°{i} → {st.session_state.composition[i]}")
+#     ## Affichage composition
+#     # for i in range(1, nbr_joueur):
+#     #     st.write(f"n°{i} → {st.session_state.composition[i]}")
 
-#     st.markdown("---")
+#     # st.markdown("---")
 #     st.subheader("🔴 Joueurs : cliquer pour sélectionner phrase")
 
-#     # Création des boutons colorés
+#     # Création des boutons colorés avec ✅ si check_joueur True
 #     cols = st.columns(4)
 #     for i in range(1, nbr_joueur):
 #         col = cols[(i - 1) % 4]
+#         checked = " ✅" if st.session_state.check_joueur[i] else ""
 #         color = "background-color: green; color: white;" if st.session_state.joueur_validated[i] else "background-color: red; color: white;"
-#         if col.button(f"n°{i} : {st.session_state.composition[i]}", key=f"btn_{i}"):
+#         if col.button(f"n°{i} : {st.session_state.composition[i]}{checked}", key=f"btn_{i}"):
 #             st.session_state.current_joueur = i
 #             st.session_state.page = 3
 
@@ -82,7 +85,6 @@
 #         output = BytesIO()
 #         with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
 #             df.to_excel(writer, index=False, sheet_name="Composition")
-#             # writer.save()
 #         excel_data = output.getvalue()
 
 #         st.download_button(
@@ -108,7 +110,9 @@
 #     if st.button("Valider la phrase"):
 #         st.session_state.joueur_phrase[idx] = choix
 #         st.session_state.joueur_validated[idx] = True
+#         st.session_state.check_joueur[idx] = True  # ✅ coche le joueur
 #         st.session_state.page = 2
+
 
 import streamlit as st
 import pandas as pd
@@ -117,7 +121,7 @@ from io import BytesIO
 st.set_page_config(page_title="Composition de Rugby", layout="wide")
 
 # --- Nombre de joueurs ---
-nbr_joueur = 4
+nbr_joueur = 24
 
 # --- Liste des joueurs ---
 joueurs = [" "] + [
@@ -163,11 +167,11 @@ elif st.session_state.page == 2:
     st.title("✅ La compo est finie")
     st.subheader("📋 Composition finale")
 
-    ## Affichage composition
-    # for i in range(1, nbr_joueur):
-    #     st.write(f"n°{i} → {st.session_state.composition[i]}")
+    # Affichage composition
+    for i in range(1, nbr_joueur):
+        st.write(f"n°{i} → {st.session_state.composition[i]}")
 
-    # st.markdown("---")
+    st.markdown("---")
     st.subheader("🔴 Joueurs : cliquer pour sélectionner phrase")
 
     # Création des boutons colorés avec ✅ si check_joueur True
@@ -177,9 +181,11 @@ elif st.session_state.page == 2:
         checked = " ✅" if st.session_state.check_joueur[i] else ""
         color = "background-color: green; color: white;" if st.session_state.joueur_validated[i] else "background-color: red; color: white;"
         if col.button(f"n°{i} : {st.session_state.composition[i]}{checked}", key=f"btn_{i}"):
-            st.session_state.current_joueur = i
-            st.session_state.page = 3
-            st.experimental_rerun()
+            st.session_state.current_joueur = i  # stocke l'index du joueur cliqué
+
+    # Navigation vers page 3 si un joueur a été cliqué
+    if st.session_state.current_joueur is not None:
+        st.session_state.page = 3
 
     # Bouton pour générer Excel
     if all(st.session_state.joueur_validated[i] for i in range(1, nbr_joueur)):
@@ -223,6 +229,6 @@ elif st.session_state.page == 3:
     if st.button("Valider la phrase"):
         st.session_state.joueur_phrase[idx] = choix
         st.session_state.joueur_validated[idx] = True
-        st.session_state.check_joueur[idx] = True  # ✅ coche le joueur
-        st.session_state.page = 2
-        st.experimental_rerun()
+        st.session_state.check_joueur[idx] = True  # coche le joueur
+        st.session_state.current_joueur = None
+        st.session_state.page = 2  # retourne à la page 2
