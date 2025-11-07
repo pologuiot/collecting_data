@@ -11,18 +11,18 @@ joueurs = [" "] + [
     "Gabrillagues", "Colombe", "Le Garrec", "Villière"
 ]
 
-# --- Initialisation de session_state ---
+# --- Initialisation session_state ---
 if "page" not in st.session_state:
     st.session_state.page = 1
 if "composition" not in st.session_state:
     st.session_state.composition = {i: " " for i in range(1, 24)}
 
-# --- Page 1 : sélection des joueurs ---
+# --- PAGE 1 ---
 if st.session_state.page == 1:
     st.title("🏉 Composition d'équipe de Rugby")
     st.markdown("Sélectionne les **23 joueurs** de ton équipe :")
 
-    # Création des 23 champs
+    # Création des 23 selectbox
     for i in range(1, 24):
         st.session_state.composition[i] = st.selectbox(
             f"n°{i}", joueurs,
@@ -30,16 +30,20 @@ if st.session_state.page == 1:
             key=f"joueur_{i}"
         )
 
-    # Vérification que toutes les cases sont remplies
+    # Vérifie si toutes les cases sont remplies
     all_filled = all(st.session_state.composition[i] != " " for i in range(1, 24))
 
     # Bouton pour passer à la page 2
-    btn = st.button("Valider la composition", disabled=not all_filled)
-    if btn:
+    if st.button("Valider la composition", disabled=not all_filled):
         st.session_state.page = 2
-        st.experimental_rerun()  # Cette fois, la rerun est OK car elle vient après la fin de la boucle principale
+        # Pas besoin de rerun, Streamlit va réactualiser automatiquement
 
-# --- Page 2 : message de fin ---
+# --- PAGE 2 ---
 elif st.session_state.page == 2:
     st.title("✅ La compo est finie")
     st.markdown("Vous avez terminé la sélection des 23 joueurs.")
+
+    # Optionnel : afficher la composition finale
+    st.subheader("📋 Composition finale")
+    for i in range(1, 24):
+        st.write(f"n°{i} → {st.session_state.composition[i]}")
