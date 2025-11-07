@@ -3,7 +3,7 @@ import streamlit as st
 st.set_page_config(page_title="Composition de Rugby", layout="centered")
 
 # --- Liste des joueurs disponibles ---
-joueurs = [
+joueurs = [" ",
     "Dupont", "Ntamack", "Fickou", "Penaud", "Jalibert",
     "Alldritt", "Ollivon", "Jelonch", "Marchand", "Baille",
     "Atonio", "Flament", "Woki", "Ramos", "Danty",
@@ -18,7 +18,7 @@ st.markdown("Sélectionne les **23 joueurs** de ton équipe :")
 composition = {}
 for i in range(1, 24):
     st.markdown(f"### n°{i}")
-    composition[i] = st.selectbox(f"Choisis le joueur n°{i}", joueurs, key=f"joueur_{i}")
+    composition[i] = st.selectbox(f"", joueurs, key=f"joueur_{i}")
 
 # --- Résumé final ---
 st.markdown("---")
