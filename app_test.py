@@ -85,7 +85,7 @@ from io import BytesIO
 st.set_page_config(page_title="Composition de Rugby", layout="wide")
 
 # --- Nombre de joueurs ---
-nbr_joueur = 24
+nbr_joueur = 5
 
 # --- Liste des joueurs ---
 joueurs = [" "] + [
