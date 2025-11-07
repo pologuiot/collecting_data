@@ -117,7 +117,7 @@ from io import BytesIO
 st.set_page_config(page_title="Composition de Rugby", layout="wide")
 
 # --- Nombre de joueurs ---
-nbr_joueur = 24
+nbr_joueur = 4
 
 # --- Liste des joueurs ---
 joueurs = [" "] + [
@@ -163,11 +163,11 @@ elif st.session_state.page == 2:
     st.title("✅ La compo est finie")
     st.subheader("📋 Composition finale")
 
-    # Affichage composition
-    for i in range(1, nbr_joueur):
-        st.write(f"n°{i} → {st.session_state.composition[i]}")
+    ## Affichage composition
+    # for i in range(1, nbr_joueur):
+    #     st.write(f"n°{i} → {st.session_state.composition[i]}")
 
-    st.markdown("---")
+    # st.markdown("---")
     st.subheader("🔴 Joueurs : cliquer pour sélectionner phrase")
 
     # Création des boutons colorés avec ✅ si check_joueur True
