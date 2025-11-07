@@ -1,8 +1,8 @@
 import streamlit as st
 
-st.set_page_config(page_title="Composition de Rugby", layout="centered")
+st.set_page_config(page_title="Composition de Rugby", layout="wide")
 
-# Liste des joueurs disponibles
+# --- Liste des joueurs disponibles ---
 joueurs = [
     "Dupont", "Ntamack", "Fickou", "Penaud", "Jalibert",
     "Alldritt", "Ollivon", "Jelonch", "Marchand", "Baille",
@@ -11,66 +11,72 @@ joueurs = [
 
 st.title("🏉 Composition d'équipe de Rugby")
 
-st.markdown("### Sélectionne tes joueurs par poste :")
+st.markdown("""
+<style>
+    .terrain {
+        position: relative;
+        width: 100%;
+        height: 600px;
+        background: linear-gradient(to right, #4CAF50 20%, #66BB6A 80%);
+        border: 4px solid #388E3C;
+        border-radius: 15px;
+        margin-top: 20px;
+    }
+    .joueur-box {
+        position: absolute;
+        width: 8vw;      /* Longueur approximative (fixe) */
+        height: 40px;    /* Hauteur fixe */
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0px 3px 6px rgba(0,0,0,0.3);
+        padding: 4px;
+        text-align: center;
+    }
+    label, .stSelectbox {
+        font-size: 0.9rem !important;
+    }
+</style>
+""", unsafe_allow_html=True)
 
-# --- Disposition en colonnes selon la composition classique ---
-# Ligne 1 : première ligne (3 joueurs)
-col1, col2, col3 = st.columns(3)
-with col1:
-    p1 = st.selectbox("Pilier gauche", joueurs, key="p1")
-with col2:
-    p2 = st.selectbox("Talonneur", joueurs, key="p2")
-with col3:
-    p3 = st.selectbox("Pilier droit", joueurs, key="p3")
+# --- Coordonnées (x,y) données ---
+positions = {
+    1: (3, 5.5),
+    2: (9, 5.5),
+    3: (15, 5.5),
+    4: (6, 4.5),
+    5: (12, 4.5),
+    6: (3, 3.5),
+    7: (15, 3.5),
+    8: (9, 3.5),
+    9: (4, 2.5),
+    10: (14, 2.5),
+    11: (0, 1.5),
+    12: (6, 1.5),
+    13: (12, 1.5),
+    14: (18, 1.5),
+    15: (9, 0.5)
+}
 
-# Ligne 2 : deuxième ligne (2 joueurs)
-col4, col5 = st.columns(2)
-with col4:
-    p4 = st.selectbox("Deuxième ligne gauche", joueurs, key="p4")
-with col5:
-    p5 = st.selectbox("Deuxième ligne droite", joueurs, key="p5")
+# --- Conversion coord -> position CSS ---
+def coord_to_css(x, y, width=4, height=0.5):
+    # Normalisation pour correspondre à la hauteur/largeur du terrain
+    left = f"{x * 4.5}%"   # facteur pour adapter la largeur
+    top = f"{(6.5 - y) * 13}%"  # inverser l’axe Y pour correspondre à ton repère
+    return f"left:{left}; top:{top};"
 
-# Ligne 3 : troisième ligne (3 joueurs)
-col6, col7, col8 = st.columns(3)
-with col6:
-    p6 = st.selectbox("Flanker gauche", joueurs, key="p6")
-with col7:
-    p7 = st.selectbox("Numéro 8", joueurs, key="p7")
-with col8:
-    p8 = st.selectbox("Flanker droit", joueurs, key="p8")
+# --- Affichage du terrain ---
+st.markdown("<div class='terrain'>", unsafe_allow_html=True)
 
-# Ligne 4 : charnière (2 joueurs)
-col9, col10 = st.columns(2)
-with col9:
-    p9 = st.selectbox("Demi de mêlée", joueurs, key="p9")
-with col10:
-    p10 = st.selectbox("Demi d’ouverture", joueurs, key="p10")
+for i in range(1, 16):
+    css_pos = coord_to_css(*positions[i])
+    st.markdown(f"<div class='joueur-box' style='{css_pos}'>", unsafe_allow_html=True)
+    joueur = st.selectbox(f"Joueur {i}", joueurs, key=f"joueur_{i}")
+    st.markdown("</div>", unsafe_allow_html=True)
 
-# Ligne 5 : trois-quarts (4 joueurs)
-col11, col12, col13, col14 = st.columns(4)
-with col11:
-    p11 = st.selectbox("Ailier gauche", joueurs, key="p11")
-with col12:
-    p12 = st.selectbox("Centre intérieur", joueurs, key="p12")
-with col13:
-    p13 = st.selectbox("Centre extérieur", joueurs, key="p13")
-with col14:
-    p14 = st.selectbox("Ailier droit", joueurs, key="p14")
+st.markdown("</div>", unsafe_allow_html=True)
 
-# Ligne 6 : arrière (1 joueur)
-p15 = st.selectbox("Arrière", joueurs, key="p15")
-
-# --- Affichage de la composition ---
+# --- Résumé ---
 st.markdown("---")
-st.header("🏉 Composition finale")
-
-composition = [
-    (1, p1), (2, p2), (3, p3),
-    (4, p4), (5, p5),
-    (6, p6), (7, p7), (8, p8),
-    (9, p9), (10, p10),
-    (11, p11), (12, p12), (13, p13), (14, p14), (15, p15)
-]
-
-for num, joueur in composition:
-    st.write(f"**{num}.** {joueur}")
+st.subheader("📋 Composition finale")
+for i in range(1, 16):
+    st.write(f"{i}. {st.session_state[f'joueur_{i}']}")
